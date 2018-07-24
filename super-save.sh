@@ -30,6 +30,8 @@ if [[ "$1" == "--restore" ]]; then
 else
   tautulli_path=`locate tautulli.db | sed '/mnt|home/d' | xargs dirname`
   if [[ "$tautulli_path" != "" ]]; then
+    printf "[\e[42m  \e[0m] Tautulli detected\n"
+    printf "     -- path: $tautulli_path\n"
     mkdir -p "/mnt/save/..."
     cd "$tautulli_path/backups"
     cp *.* "/mnt/save/..."
