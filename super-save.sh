@@ -1,6 +1,6 @@
 #!/bin/bash
 
-requested: git-core
+requested: git-core python2.7
 
 
 
@@ -18,6 +18,7 @@ if [[ "$1" == "--restore" ]]; then
         adduser --system --no-create-home tautulli
         chown tautulli:nogroup -R /opt/Tautulli
         touch /etc/default/tautulli
+        ## mettre les params dans le fichier
         chmod +x /opt/Tautulli/init-scripts/init.ubuntu
         cp /opt/Tautulli/init-scripts/init.ubuntu /etc/init.d/tautulli
         update-rc.d tautulli defaults
