@@ -7,8 +7,12 @@ requested: git-core python2.7
 #### Tautulli (previously plexpy)
 if [[ "$1" == "--restore" ]]; then
   if [[ -d "/mnt/save/..." ]]; then
-    printf "Do you want to restore/install Tautulli? (yes/no) : "
-    read question_tautulli
+    if [[ "$2" != "-y ]]; then
+      printf "Do you want to restore/install Tautulli? (yes/no) : "
+      read question_tautulli
+    else
+      question_tautulli="yes"
+    fi
     if [[ "${question_tautulli,,}" == "yes|y" ]]; then
       if [[ -d "/opt/Tautulli" ]]; then
         cp /mnt/save...
