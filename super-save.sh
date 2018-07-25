@@ -1,6 +1,20 @@
 #!/bin/bash
 
-requested: git-core python2.7
+########################
+## Script de scoony
+## Version: 0.0.0.0
+########################
+## Installation: 
+## Micro-config
+description="Sauvegarde automatique pour Ubuntu" #description pour le menu
+script_github="" #emplacement du script original
+icone_github="" #emplacement de l'icône du script
+required_tools="git-core python2.7" #dépendances du script
+script_cron="0 1 * * *" #définir la planification cron
+########################
+
+
+
 
 
 
