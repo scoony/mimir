@@ -39,5 +39,6 @@ else
     mkdir -p "/mnt/save/..."
     cd "$tautulli_path/backups"
     cp *.* "/mnt/save/..."
+    cat /etc/default/tautulli > /mnt/save/...
   fi
 fi
