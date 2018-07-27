@@ -9,7 +9,6 @@
 description_fr="Sauvegarde/restauration automatique pour Linux" #description pour le menu
 description_eng="Automatically backup/restore for Linux"
 script_github="https://raw.githubusercontent.com/scoony/super-save.sh/master/super-save.sh" #empoacement du script original
-
 icone_github="" #emplacement de l'icône du script
 langue_fr="https://raw.githubusercontent.com/scoony/super-save.sh/master/.cache-languages/super-save.french"
 langue_eng="https://raw.githubusercontent.com/scoony/super-save.sh/master/.cache-languages/super-save.english"
@@ -71,6 +70,71 @@ if [[ "$langue_distant_check" != "$langue_local_check" ]]; then
   fi
 fi
 source $mon_script_langue
+
+#### Vérification que le script possède les droits root
+## NE PAS TOUCHER
+if [[ "$EUID" != "0" ]]; then
+  if [[ "$CRON_SCRIPT" == "oui" ]]; then
+    exit 1
+  else
+    if [[ "$CHECK_MUI" != "" ]]; then
+      source $mon_script_langue
+      echo "$mui_root_check"
+    else
+      echo "Vous devrez impérativement utiliser le compte root"
+    fi
+    exit 1
+  fi
+fi
+
+#### Fonction pour envoyer des push
+push-message() {
+  push_title=$1
+  push_content=$2
+  for user in {1..10}; do
+    destinataire=`eval echo "\\$destinataire_"$user`
+    if [ -n "$destinataire" ]; then
+      curl -s \
+        --form-string "token=$token_app" \
+        --form-string "user=$destinataire" \
+        --form-string "title=$push_title" \
+        --form-string "message=$push_content" \
+        --form-string "html=1" \
+        --form-string "priority=0" \
+        https://api.pushover.net/1/messages.json > /dev/null
+    fi
+  done
+}
+
+#### Vérification de process pour éviter les doublons (commandes externes)
+for process_travail in $verification_process ; do
+  process_important=`ps aux | grep $process_travail | sed '/grep/d'`
+  if [[ "$process_important" != "" ]] ; then
+    if [[ "$CRON_SCRIPT" != "oui" ]] ; then
+      if [[ "$CHECK_MUI" != "" ]]; then
+        source $mon_script_langue
+        echo $process_important"$mui_prevent_dupe_task"
+      else
+        echo $process_important" est en cours de fonctionnement, arrêt du script"
+      fi
+      fin_script=`date`
+      if [[ "$CHECK_MUI" != "" ]]; then
+        source $mon_script_langue
+        echo -e "$mui_end_of_script"
+      else
+        if [[ "$CHECK_MUI" != "" ]]; then
+          source $mon_script_langue
+          echo -e "$mui_end_of_script"
+        else
+          echo -e "\e[43m -- FIN DE SCRIPT: $fin_script -- \e[0m "
+        fi
+      fi
+    fi
+    exit 1
+  fi
+done
+
+
 
 
 
