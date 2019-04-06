@@ -136,9 +136,14 @@ done
 
 
 
+## Sauvegardes Ã  effectuer
+for module in /root/.config/mimir/modules/* ; do
+  module_name=`basename $module`
+  echo "Module detecte: ["$module_name"]"
+  if [[ -d "/etc/$module_name" ]] || [[ -d "/opt/$module_name" ]]; then
+    bash "$module"
+  fi
+done
 
 
-
-
-
-
+#pour l'installation et la restauration partie differente
