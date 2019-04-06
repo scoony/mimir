@@ -139,8 +139,8 @@ done
 ## Traitement des modules de sauvegarde
 for module in $mon_script_config/modules/* ; do
   module_name=`basename $module`
-  echo "Module detecte: ["$module_name"]"
   if [[ -d "/etc/$module_name" ]] || [[ -d "/opt/$module_name" ]]; then
+    echo "Module detecte: ["$module_name"]"
     bash "$module"
   fi
 done
