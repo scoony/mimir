@@ -140,8 +140,11 @@ done
 for module in $mon_script_config/modules/* ; do
   module_name=`basename $module`
   if [[ -d "/etc/$module_name" ]] || [[ -d "/opt/$module_name" ]]; then
-    echo "Module detecte: ["$module_name"]"
-    bash "$module"
+    echo "Module detecte (restore): ["$module_name"]"
+    bash "$module" --restore
+  else
+    echo "Module detecte (install): ["$module_name"]"
+    bash "$module" --install
   fi
 done
 
