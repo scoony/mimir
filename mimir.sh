@@ -136,7 +136,7 @@ done
 
 
 
-## Sauvegardes Ã  effectuer
+## Traitement des modules de sauvegarde
 for module in $mon_script_config/modules/* ; do
   module_name=`basename $module`
   echo "Module detecte: ["$module_name"]"
