@@ -8,10 +8,10 @@
 ## Micro-config
 description_fr="Sauvegarde/restauration automatique pour Linux" #description pour le menu
 description_eng="Automatically backup/restore for Linux"
-script_github="https://raw.githubusercontent.com/scoony/mimir.sh/master/mimir.sh" #empoacement du script original
+script_github="https://raw.githubusercontent.com/scoony/mimir/master/mimir.sh" #empoacement du script original
 icone_github="" #emplacement de l'icône du script
-langue_fr="https://raw.githubusercontent.com/scoony/mimir.sh/master/.cache-languages/mimir.french"
-langue_eng="https://raw.githubusercontent.com/scoony/mimir.sh/master/.cache-languages/mimir.english"
+langue_fr="https://raw.githubusercontent.com/scoony/mimir/master/.cache-languages/mimir.french"
+langue_eng="https://raw.githubusercontent.com/scoony/mimir/master/.cache-languages/mimir.english"
 required_repos="" #ajout de repository
 required_tools="git-core python2.7" #dépendances du script
 script_cron="0 1 * * *" #définir la planification cron
