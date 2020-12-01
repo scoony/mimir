@@ -47,7 +47,7 @@ while kill -0 $pid 2>/dev/null; do
   sleep .1
 done
 chmod +x "$install_path/mimir.sh"
-if [[ !-d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
+if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
 wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
 pid=$!
 spin='-\|/'
