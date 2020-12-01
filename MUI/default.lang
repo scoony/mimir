@@ -1,0 +1,11 @@
+ #!/bin/bash
+ 
+mui_installer_title="INSTALLATION OF MIMIR"
+mui_installer_fail="[ FAIL ] Do NOT run this script as root!"
+mui_installer_apt_update="Updating repository ..."
+mui_installer_apt_update_done="Update repository done"
+mui_installer_apt_install="Installing packages in progress ..."
+mui_installer_apt_install_done="Install packages done"
+mui_installer_wget="Downloading file"
+mui_installer_wget_done="Files downloaded"
+mui_installer_mimir="launch of mimir script"
