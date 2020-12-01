@@ -9,3 +9,7 @@ mui_installer_apt_install_done="Install packages done"
 mui_installer_wget="Downloading file"
 mui_installer_wget_done="Files downloaded"
 mui_installer_mimir="launch of mimir script"
+
+mui_root_check="[ FAIL ] RUN this script as root!"
+mui_prevent_dupe_task=""
+mui_end_of_script=""

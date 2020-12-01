@@ -37,7 +37,7 @@ fi
 
 
 ## download files
-wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
+wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g' "$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
 pid=$!
 spin='-\|/'
 i=0
@@ -47,7 +47,7 @@ while kill -0 $pid 2>/dev/null; do
   sleep .1
 done
 if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
-wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
+wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
 pid=$!
 spin='-\|/'
 i=0

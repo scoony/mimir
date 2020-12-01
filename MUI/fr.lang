@@ -9,3 +9,7 @@ mui_installer_apt_install_done="Installation des paquets"
 mui_installer_wget="Téléchargement du fichier"
 mui_installer_wget_done="Téléchargement des fichiers effectuée"
 mui_installer_mimir="Lancement du script mimir"
+
+mui_root_check="[ ERREUR ] EXÉCUTEZ ce script en tant que root!"
+mui_prevent_dupe_task="est en cours de fonctionnement, arrêt du script."
+mui_end_of_script=""
