@@ -85,18 +85,40 @@ while kill -0 $pid 2>/dev/null; do
 done
 printf "$my_printf" && printf "\r"
 eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/default.lang"' $log_install_echo
-wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
-pid=$!
-spin='-\|/'
-i=0
-while kill -0 $pid 2>/dev/null; do
-  i=$(( (i+1) %4 ))
-  printf "\r[  ] $mui_installer_wget MUI/$os_language.lang ... ${spin:$i:1}" 
-  sleep .1
-done
-printf "$my_printf" && printf "\r"
-eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $log_install_echo
+if [[ "$os_language" != "default" ]]; then 
+  wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
+  pid=$!
+  spin='-\|/'
+  i=0
+  while kill -0 $pid 2>/dev/null; do
+    i=$(( (i+1) %4 ))
+    printf "\r[  ] $mui_installer_wget MUI/$os_language.lang ... ${spin:$i:1}" 
+    sleep .1
+  done
+  printf "$my_printf" && printf "\r"
+  eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $log_install_echo
+fi
 my_language_file="/root/.config/mimir/MUI/$os_language.lang"
+
+
+## download modules
+
+eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_modules"' $log_install_echo
+source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/extras/update-files)
+if [[ ! -d "/root/.config/mimir/modules" ]]; then mkdir -p "/root/.config/mimir/modules"; fi
+  for current_file in $file{001..999}; do
+    wget --quiet "${remote_folder}/modules/${current_file}" -O "/root/.config/mimir/modules/${current_file}" && sed -i -e 's/\r//g' "/root/.config/mimir/modules/${current_file}" && chmod +x "/root/.config/mimir/modules/${current_file}" >> $log_install &
+    pid=$!
+    spin='-\|/'
+    i=0
+    while kill -0 $pid 2>/dev/null; do
+      i=$(( (i+1) %4 ))
+      printf "\r[  ] $mui_installer_wget modules/${current_file} ... ${spin:$i:1}" 
+      sleep .1
+    done
+    printf "$my_printf" && printf "\r"
+    eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget modules/${current_file}"' $log_install_echo
+  done
 
 
 ## end of script
