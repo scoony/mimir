@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #### Tautulli (anciennement plexpy)
 if [[ "$1" == "--restore" ]]; then
   if [[ -d "/mnt/save/..." ]]; then
