@@ -34,35 +34,21 @@ fi
 
 my_title_count=`echo -n "$mui_installer_title" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
 line_lengh="78"
-before_after_count=$(bc -l <<<"scale=1; ( $line_lengh - $my_title_count ) / 2")
-if [[ $before_after_count =~ ".5" ]]; then
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  before_after_count=$(((($line_lengh-$my_title_count)/2)+1))
-  after=`eval printf "%0.s-" {1..$before_after_count}`
-else
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  after=`eval printf "%0.s-" {1..$before_after_count}`
-fi
+before_count=$((($line_lengh-$my_title_count)/2))
+after_count=$(((($line_lengh-$my_title_count)%2)+$before_count))
+before=`eval printf "%0.s-" {1..$before_count}`
+after=`eval printf "%0.s-" {1..$after_count}`
 eval 'printf "\e[43m%s%s%s\e[0m\n" "$before" "$mui_installer_title" "$after"' $log_install_echo
 if [ "$(whoami)" != "root" ]; then
   eval 'echo -e "$mui_installer_fail"' $log_install_echo
-  fin_script=`date`
-  source $mon_script_langue
-  my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
+  end_of_script=`date`
+  source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_language.lang)
+  my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | sed 's/é/e/g' | wc -c`
   line_lengh="78"
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  if [[ $before_after_count =~ ".5" ]]; then
-    before_after_count=$((($line_lengh-$my_title_count)/2))
-    before=`eval printf "%0.s-" {1..$before_after_count}`
-    before_after_count=$(((($line_lengh-$my_title_count)/2)+1))
-    after=`eval printf "%0.s-" {1..$before_after_count}`
-  else
-    before_after_count=$((($line_lengh-$my_title_count)/2))
-    before=`eval printf "%0.s-" {1..$before_after_count}`
-    after=`eval printf "%0.s-" {1..$before_after_count}`
-  fi
+  before_count=$((($line_lengh-$my_title_count)/2))
+  after_count=$(((($line_lengh-$my_title_count)%2)+$before_count))
+  before=`eval printf "%0.s-" {1..$before_count}`
+  after=`eval printf "%0.s-" {1..$after_count}`
   eval 'printf "\e[43m%s%s%s\e[0m\n" "$before" "$mui_end_of_script" "$after"' $log_install_echo
   exit 1
 fi
@@ -70,7 +56,7 @@ fi
 
 ## download mimir.sh
 
-eval 'printf  "\e[44m\u2263\u2263  \e[0m \e[44m \e[1m %-63s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_script"' $mon_log_perso
+eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_script"' $log_install_echo
 wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g' "$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
 pid=$!
 spin='-\|/'
@@ -83,9 +69,10 @@ done
 printf "$my_printf" && printf "\r"
 eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget mimir.sh"' $mon_log_perso
 
+
 ## download language files
 
-eval 'printf  "\e[44m\u2263\u2263  \e[0m \e[44m \e[1m %-63s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_lang"' $mon_log_perso
+eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_lang"' $log_install_echo
 if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
 wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/default.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/default.lang" && chmod +x "/root/.config/mimir/MUI/default.lang" >> $log_install &
 pid=$!
@@ -97,7 +84,7 @@ while kill -0 $pid 2>/dev/null; do
   sleep .1
 done
 printf "$my_printf" && printf "\r"
-eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/default.lang"' $mon_log_perso
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/default.lang"' $log_install_echo
 wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
 pid=$!
 spin='-\|/'
@@ -108,23 +95,18 @@ while kill -0 $pid 2>/dev/null; do
   sleep .1
 done
 printf "$my_printf" && printf "\r"
-eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $mon_log_perso
-mon_script_langue="/root/.config/mimir/MUI/$os_language.lang"
-#eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget_done"' $log_install_echo
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $log_install_echo
+my_language_file="/root/.config/mimir/MUI/$os_language.lang"
 
-fin_script=`date`
-source $mon_script_langue
-my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
+
+## end of script
+
+end_of_script=`date`
+source $my_language_file
+my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | sed 's/é/e/g' | wc -c`
 line_lengh="78"
-before_after_count=$((($line_lengh-$my_title_count)/2))
-if [[ $before_after_count =~ ".5" ]]; then
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  before_after_count=$(((($line_lengh-$my_title_count)/2)+1))
-  after=`eval printf "%0.s-" {1..$before_after_count}`
-else
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  after=`eval printf "%0.s-" {1..$before_after_count}`
-fi
+before_count=$((($line_lengh-$my_title_count)/2))
+after_count=$(((($line_lengh-$my_title_count)%2)+$before_count))
+before=`eval printf "%0.s-" {1..$before_count}`
+after=`eval printf "%0.s-" {1..$after_count}`
 eval 'printf "\e[43m%s%s%s\e[0m\n" "$before" "$mui_end_of_script" "$after"' $log_install_echo
