@@ -74,7 +74,7 @@ eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget mimir.sh"' $mon_log_pers
 
 eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_lang"' $log_install_echo
 if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
-wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/default.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/default.lang" && chmod +x "/root/.config/mimir/MUI/default.lang" >> $log_install &
+wget -q "$remote_folder/MUI/default.lang" -O "/root/.config/mimir/MUI/default.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/default.lang" && chmod +x "/root/.config/mimir/MUI/default.lang" >> $log_install &
 pid=$!
 spin='-\|/'
 i=0
