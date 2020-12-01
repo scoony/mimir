@@ -9,6 +9,7 @@ my_printf="\r                                                                   
 
 
 ## Check local language and apply MUI
+
 os_language=$(locale | grep LANG | sed -n '1p' | cut -d= -f2 | cut -d_ -f1)
 check_language=`curl -s "https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_language.lang"`
 if [[ "$check_language" == "404: Not Found" ]]; then
@@ -18,6 +19,7 @@ source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_l
 
 
 ### create log install file and permissions
+
 if [ "$(whoami)" == "root" ]; then
   if [[ -f "$log_install" ]]; then
     rm "$log_install"
@@ -29,6 +31,7 @@ fi
 
 
 ### make sure it's not the root account
+
 my_title_count=`echo -n "$mui_installer_title" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
 line_lengh="78"
 before_after_count=$(bc -l <<<"scale=1; ( $line_lengh - $my_title_count ) / 2")
@@ -65,7 +68,8 @@ if [ "$(whoami)" != "root" ]; then
 fi
 
 
-## download files
+## download mimir.sh
+
 eval 'printf  "\e[44m\u2263\u2263  \e[0m \e[44m \e[1m %-63s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_script"' $mon_log_perso
 wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g' "$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
 pid=$!
@@ -76,6 +80,12 @@ while kill -0 $pid 2>/dev/null; do
   printf "\r[  ] $mui_installer_wget mimir.sh ... ${spin:$i:1}" 
   sleep .1
 done
+printf "$my_printf" && printf "\r"
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget mimir.sh"' $mon_log_perso
+
+## download language files
+
+eval 'printf  "\e[44m\u2263\u2263  \e[0m \e[44m \e[1m %-63s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_lang"' $mon_log_perso
 if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
 wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/default.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/default.lang" && chmod +x "/root/.config/mimir/MUI/default.lang" >> $log_install &
 pid=$!
@@ -86,6 +96,8 @@ while kill -0 $pid 2>/dev/null; do
   printf "\r[  ] $mui_installer_wget MUI/default.lang ... ${spin:$i:1}" 
   sleep .1
 done
+printf "$my_printf" && printf "\r"
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/default.lang"' $mon_log_perso
 wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
 pid=$!
 spin='-\|/'
@@ -96,7 +108,9 @@ while kill -0 $pid 2>/dev/null; do
   sleep .1
 done
 printf "$my_printf" && printf "\r"
-eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget_done"' $log_install_echo
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $mon_log_perso
+mon_script_langue="/root/.config/mimir/MUI/$os_language.lang"
+#eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget_done"' $log_install_echo
 
 fin_script=`date`
 source $mon_script_langue
