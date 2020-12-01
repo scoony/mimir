@@ -1,7 +1,7 @@
  #!/bin/bash
  
 mui_installer_title="INSTALLATION DE MIMIR"
-mui_installer_fail="[ ERREUR ] N'exécutez PAS ce script en tant que root!"
+mui_installer_fail="[ ERREUR ] EXÉCUTEZ ce script en tant que root!"
 mui_installer_apt_update="Mise à jour des dépôts ..."
 mui_installer_apt_update_done="Mise à jour des dépots effectuée"
 mui_installer_apt_install="Installation des paquets en cours ..."

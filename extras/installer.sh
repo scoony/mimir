@@ -17,11 +17,33 @@ fi
 source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_language.lang)
 
 
-### make sure it's not the root account
-if [[ -f "$log_install" ]]; then rm "$log_install"; fi
-eval 'echo -e "\e[43m-------------------- $mui_installer_title --------------------\e[0m"' $log_install_echo
+### create log install file and permissions
 if [ "$(whoami)" == "root" ]; then
+  if [[ -f "$log_install" ]]; then
+    rm "$log_install"
+  fi
+  touch "$log_install"
+  chmod 777 -R "$log_install"
+  chown $main_user:$main_user "$log_install"
+fi
+
+### make sure it's not the root account
+eval 'echo -e "\e[43m-------------------- $mui_installer_title --------------------\e[0m"' $log_install_echo
+if [ "$(whoami)" != "root" ]; then
   eval 'echo -e "$mui_installer_fail"' $log_install_echo
   exit 1
 fi
 
+
+## download files
+wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g'"$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
+pid=$!
+spin='-\|/'
+i=0
+while kill -0 $pid 2>/dev/null; do
+  i=$(( (i+1) %4 ))
+  printf "\r[  ] $mui_installer_wget mimir.sh ... ${spin:$i:1}" 
+  sleep .1
+done
+printf "$my_printf" && printf "\r"
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget_done"' $log_install_echo
