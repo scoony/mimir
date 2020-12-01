@@ -33,6 +33,7 @@ fi
 mon_script_fichier=`basename "$0"`
 mon_script_base=`echo ''$mon_script_fichier | cut -f1 -d'.'''`
 mon_script_base_maj=`echo ${mon_script_base^^}`
+mon_script_modules=`echo "/root/.config/"$mon_script_base"/modules"`
 mon_script_config=`echo "/root/.config/"$mon_script_base"/"$mon_script_base".conf"`
 mon_script_ini=`echo "/root/.config/"$mon_script_base"/"$mon_script_base".ini"`
 mon_script_langue=`echo "/root/.config/"$mon_script_base"/MUI/"$affichage_langue".lang"`
@@ -88,27 +89,21 @@ push-message() {
   done
 }
 
+
 #### Vérification de process pour éviter les doublons (commandes externes)
 for process_travail in $verification_process ; do
   process_important=`ps aux | grep $process_travail | sed '/grep/d'`
   if [[ "$process_important" != "" ]] ; then
     if [[ "$CRON_SCRIPT" != "oui" ]] ; then
       echo "$process_travail $mui_prevent_dupe_task"
-      fin_script=`date`
+      end_of_script=`date`
       source $mon_script_langue
-      my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
+      my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | sed 's/é/e/g' | wc -c`
       line_lengh="78"
-      before_after_count=$((($line_lengh-$my_title_count)/2))
-      if [[ $before_after_count =~ ".5" ]]; then
-        before_after_count=$((($line_lengh-$my_title_count)/2))
-        before=`eval printf "%0.s-" {1..$before_after_count}`
-        before_after_count=$(((($line_lengh-$my_title_count)/2)+1))
-        after=`eval printf "%0.s-" {1..$before_after_count}`
-      else
-        before_after_count=$((($line_lengh-$my_title_count)/2))
-        before=`eval printf "%0.s-" {1..$before_after_count}`
-        after=`eval printf "%0.s-" {1..$before_after_count}`
-      fi
+      before_count=$((($line_lengh-$my_title_count)/2))
+      after_count=$(((($line_lengh-$my_title_count)%2)+$before_count))
+      before=`eval printf "%0.s-" {1..$before_count}`
+      after=`eval printf "%0.s-" {1..$after_count}`
       printf "\e[43m%s%s%s\e[0m\n" "$before" "$mui_end_of_script" "$after"
     fi
     exit 1
@@ -116,34 +111,31 @@ for process_travail in $verification_process ; do
 done
 
 
-
-## Traitement des modules de sauvegarde
-for module in $mon_script_config/modules/* ; do
-  module_name=`basename $module`
-  if [[ -d "/etc/$module_name" ]] || [[ -d "/opt/$module_name" ]]; then
-    echo "Module detecte (restore): ["$module_name"]"
-    bash "$module" --restore
-  else
-    echo "Module detecte (install): ["$module_name"]"
-    bash "$module" --install
-  fi
-done
-
-
-#pour l'installation et la restauration partie differente
-fin_script=`date`
-source $mon_script_langue
-my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | wc -c`
-line_lengh="78"
-before_after_count=$((($line_lengh-$my_title_count)/2))
-if [[ $before_after_count =~ ".5" ]]; then
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  before_after_count=$(((($line_lengh-$my_title_count)/2)+1))
-  after=`eval printf "%0.s-" {1..$before_after_count}`
+## Traitement des modules
+mes_modules=`ls $mon_script_modules`
+if [[ "$mes_modules" == "" ]]; then
+  echo "Aucun module détecté"
 else
-  before_after_count=$((($line_lengh-$my_title_count)/2))
-  before=`eval printf "%0.s-" {1..$before_after_count}`
-  after=`eval printf "%0.s-" {1..$before_after_count}`
+  for module in $mes_modules ; do
+    module_name=`basename $module`
+    if [[ -d "/etc/$module_name" ]] || [[ -d "/opt/$module_name" ]]; then
+      echo "Module detecte (restore): ["$module_name"]"
+      #bash "$module" --restore
+    else
+      echo "Module detecte (install): ["$module_name"]"
+      #bash "$module" --install
+    fi
+  done
 fi
+
+
+## fin du script
+end_of_script=`date`
+source $mon_script_langue
+my_title_count=`echo -n "$mui_end_of_script" | sed "s/\\\e\[[0-9]\{1,2\}m//g" | sed 's/é/e/g' | wc -c`
+line_lengh="78"
+before_count=$((($line_lengh-$my_title_count)/2))
+after_count=$(((($line_lengh-$my_title_count)%2)+$before_count))
+before=`eval printf "%0.s-" {1..$before_count}`
+after=`eval printf "%0.s-" {1..$after_count}`
 printf "\e[43m%s%s%s\e[0m\n" "$before" "$mui_end_of_script" "$after"
