@@ -36,7 +36,7 @@ fi
 
 
 ## download files
-wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g'"$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
+wget -q "$remote_folder/mimir.sh" -O "$install_path/mimir.sh" && sed -i -e 's/\r//g' "$install_path/mimir.sh" && chmod +x "$install_path/mimir.sh" >> $log_install &
 pid=$!
 spin='-\|/'
 i=0
