@@ -18,7 +18,7 @@ source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_l
 
 
 ### make sure it's not the root account
-rm "$log_install"
+if [[ -f "$log_install" ]]; then rm "$log_install"; fi
 eval 'echo -e "\e[43m-------------------- $mui_installer_title --------------------\e[0m"' $log_install_echo
 if [ "$(whoami)" == "root" ]; then
   eval 'echo -e "$mui_installer_fail"' $log_install_echo
