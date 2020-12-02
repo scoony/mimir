@@ -107,19 +107,25 @@ eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  
 source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/extras/update-files)
 if [[ ! -d "/root/.config/mimir/modules" ]]; then mkdir -p "/root/.config/mimir/modules"; fi
   for current_file in $file{001..999}; do
-    wget --quiet "${remote_folder}/modules/${current_file}" -O "/root/.config/mimir/modules/${current_file}" && sed -i -e 's/\r//g' "/root/.config/mimir/modules/${current_file}" && chmod +x "/root/.config/mimir/modules/${current_file}" >> $log_install &
-    pid=$!
-    spin='-\|/'
-    i=0
-    while kill -0 $pid 2>/dev/null; do
-      i=$(( (i+1) %4 ))
-      printf "\r[  ] $mui_installer_wget modules/${current_file} ... ${spin:$i:1}" 
-      sleep .1
-    done
-    printf "$my_printf" && printf "\r"
-    eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget modules/${current_file}"' $log_install_echo
+    echo -n ".... Do you what to download module ${current_file} (y/n) ? "
+    read answer
+    if [ "$answer" != "${answer#[Yy]}" ] ;then
+      wget --quiet "${remote_folder}/modules/${current_file}" -O "/root/.config/mimir/modules/${current_file}" && sed -i -e 's/\r//g' "/root/.config/mimir/modules/${current_file}" && chmod +x "/root/.config/mimir/modules/${current_file}" >> $log_install &
+      pid=$!
+      spin='-\|/'
+      i=0
+      while kill -0 $pid 2>/dev/null; do
+        i=$(( (i+1) %4 ))
+        printf "\r[  ] $mui_installer_wget modules/${current_file} ... ${spin:$i:1}" 
+        sleep .1
+      done
+      printf "$my_printf" && printf "\r"
+      eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget modules/${current_file}"' $log_install_echo
+    else
+      eval 'echo -e "[\e[41m\u2717 \e[0m] Modules ${current_file} $mui_installer_no_wget"' $log_install_echo
+    fi
   done
-
+fi
 
 ## end of script
 

@@ -11,6 +11,7 @@ mui_section_script="DOWNLOAD SCRIPT"
 mui_section_lang="DOWNLOAD LANGUAGE FILES"
 mui_section_modules="DOWNLOAD MODULES"
 mui_installer_wget="Downloading file"
+mui_installer_no_wget="not downloaded"
 mui_installer_wget_done="Files downloaded"
 mui_installer_mimir="launch of mimir script"
 
