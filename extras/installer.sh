@@ -13,7 +13,7 @@ my_printf="\r                                                                   
 os_language=$(locale | grep LANG | sed -n '1p' | cut -d= -f2 | cut -d_ -f1)
 check_language=`curl -s "https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_language.lang"`
 if [[ "$check_language" == "404: Not Found" ]]; then
-  os_language="default"
+  os_language="en"
 fi
 source <(curl -s https://raw.githubusercontent.com/scoony/mimir/master/MUI/$os_language.lang)
 
@@ -72,32 +72,17 @@ eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget mimir.sh"' $mon_log_pers
 
 ## download language files
 
-eval 'printf  "\e[44m\u2263\u2263\u2263 \e[0m \e[44m \e[1m %-62s  \e[0m \e[44m  \e[0m \e[44m \e[0m \e[34m\u2759\e[0m\n" "$mui_section_lang"' $log_install_echo
-if [[ ! -d "/root/.config/mimir/MUI" ]]; then mkdir -p "/root/.config/mimir/MUI"; fi
-wget -q "$remote_folder/MUI/default.lang" -O "/root/.config/mimir/MUI/default.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/default.lang" && chmod +x "/root/.config/mimir/MUI/default.lang" >> $log_install &
+wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
 pid=$!
 spin='-\|/'
 i=0
 while kill -0 $pid 2>/dev/null; do
   i=$(( (i+1) %4 ))
-  printf "\r[  ] $mui_installer_wget MUI/default.lang ... ${spin:$i:1}" 
+  printf "\r[  ] $mui_installer_wget MUI/$os_language.lang ... ${spin:$i:1}" 
   sleep .1
 done
 printf "$my_printf" && printf "\r"
-eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/default.lang"' $log_install_echo
-if [[ "$os_language" != "default" ]]; then 
-  wget -q "$remote_folder/MUI/$os_language.lang" -O "/root/.config/mimir/MUI/$os_language.lang" && sed -i -e 's/\r//g' "/root/.config/mimir/MUI/$os_language.lang" && chmod +x "/root/.config/mimir/MUI/$os_language.lang" >> $log_install &
-  pid=$!
-  spin='-\|/'
-  i=0
-  while kill -0 $pid 2>/dev/null; do
-    i=$(( (i+1) %4 ))
-    printf "\r[  ] $mui_installer_wget MUI/$os_language.lang ... ${spin:$i:1}" 
-    sleep .1
-  done
-  printf "$my_printf" && printf "\r"
-  eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $log_install_echo
-fi
+eval 'echo -e "[\e[42m\u2713 \e[0m] $mui_installer_wget MUI/$os_language.lang"' $log_install_echo
 my_language_file="/root/.config/mimir/MUI/$os_language.lang"
 
 
